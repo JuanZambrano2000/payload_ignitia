@@ -16,6 +16,7 @@ Este proyecto tiene como objetivo desarrollar un payload para un Cohete para med
     * Tarjeta SD
     * Sensores adicionales (opcional)
 * **Software:**
+    * [Basado en el codigo de SensorsIot](https://github.com/SensorsIot/Geiger-Counter-RadiationD-v1.1-CAJOE-/blob/master/simpletest)
     * Código Arduino para la adquisición de datos y guardado en tarjeta
 
 **Funcionamiento:**
@@ -35,13 +36,5 @@ Este proyecto tiene como objetivo desarrollar un payload para un Cohete para med
 Este proyecto es una colaboración entre los miembros del grupo IGNITIA ITESM GDL. Cada miembro ha contribuido al proyecto de diferentes maneras:
 
 * **Desarrollo del software:**
-    * **Juan Pablo Zambrano Barajas**
-    * **Stefano Herrejon Antuñano**
-
-**Documentación:**
-
-Este README.md proporciona una descripción general del proyecto. Para obtener más información, consulte la siguiente documentación:
-
-* **Sensor de radiación:** ![Imagen del sensor RadiationD-v1.1 (CAJOE)](RadiationD-v1.1 (CAJOE).jpg)
-* **Código Arduino:** [Enlace al código]
-* **Script para el análisis de datos:** [Enlace al script]
+    * **Juan Pablo Zambrano**
+    * **Stefano Herrejon**
