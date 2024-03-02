@@ -1,0 +1,101 @@
+Total clicks since start: 12
+Rolling CPM: 12
+Total clicks since start: 2
+Rolling CPM: 2
+Total clicks since start: 10
+Rolling CPM: 10
+Total clicks since start: 1
+Rolling CPM: 1
+Total clicks since start: 2
+Rolling CPM: 2
+Total clicks since start: 3
+Rolling CPM: 3
+Total clicks since start: 3
+Rolling CPM: 3
+Total clicks since start: 3
+Rolling CPM: 3
+Total clicks since start: 3
+Rolling CPM: 3
+Total clicks since start: 4
+Rolling CPM: 4
+Total clicks since start: 5
+Rolling CPM: 5
+Total clicks since start: 5
+Rolling CPM: 5
+Total clicks since start: 5
+Rolling CPM: 5
+Total clicks since start: 7
+Rolling CPM: 7
+Total clicks since start: 7
+Rolling CPM: 7
+Total clicks since start: 7
+Rolling CPM: 7
+Total clicks since start: 9
+Rolling CPM: 9
+Total clicks since start: 9
+Rolling CPM: 303
+Total clicks since start: 304
+Rolling CPM: 304
+Total clicks since start: 306
+Rolling CPM: 306
+Total clicks since start: 308
+Rolling CPM: 308
+Total clicks since start: 317
+Rolling CPM: 317
+Total clicks since start: 324
+Rolling CPM: 324
+Total clicks since start: 333
+Rolling CPM: 333
+Total clicks since start: 343
+Rolling CPM: 343
+Total clicks since start: 354
+Rolling CPM: 354
+Total clicks since start: 357
+Rolling CPM: 357
+Total clicks since start: 360
+Rolling CPM: 360
+Total clicks since start: 364
+Rolling CPM: 364
+Total clicks since start: 372
+Rolling CPM: 372
+Total clicks since start: 383
+Rolling CPM: 383
+Total clicks since start: 395
+Rolling CPM: 395
+
+Total clicks since start: 364
+Rolling CPM: 364
+Total clicks since start: 372
+Rolling CPM: 372
+Total clicks since start: 383
+Rolling CPM: 383
+Total clicks since start: 395
+Rolling CPM: 395
+Total clicks since start: 399
+Rolling CPM: 399
+Total clicks since start: 403
+Rolling CPM: 403
+Total clicks since start: 411
+Rolling CPM: 411
+Total clicks since start: 412
+Rolling CPM: 206
+Total clicks since start: 417
+Rolling CPM: 208
+Total clicks since start: 424
+Rolling CPM: 212
+Total clicks since start: 427
+Rolling CPM: 213
+Total clicks since start: 434
+Rolling CPM: 217
+Total clicks since start: 448
+Rolling CPM: 224
+Total clicks since start: 457
+Rolling CPM: 228
+Total clicks since start: 466
+Rolling CPM: 233
+Total clicks since start: 472
+Rolling CPM: 236
+Total clicks since start: 0
+Rolling CPM: 0
+Total clicks since start: 0
+Rolling CPM: 0
