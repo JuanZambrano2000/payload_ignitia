@@ -31,25 +31,27 @@ const int inputPin = 2;                                  // Geiger counter is in
 unsigned int thirds = 0;
 unsigned long minutes = 1;
 unsigned long start = 0;
+volatile unsigned long totalCounts = 0;
 
-#define LOG_PERIOD 5000 // Logging period in milliseconds
+#define LOG_PERIOD 500 // Logging period in milliseconds
 #define MINUTE_PERIOD 60000
 
 void ISR_impulse() { // Captures count of events from Geiger counter board
   counts++;
+  totalCounts++;
 }
 
 void setup() {
   // Set up the Arduino environment (runs once during startup)
   Serial.begin(9600); // Initialize serial communication
-  delay(500); // Wait for stability
+  delay(1000); // Wait for stability
   Serial.println("Booting..."); // Print boot message
   Serial.println("Measuring"); // Print measurement message
   pinMode(inputPin, INPUT); // Set pin for capturing tube events
   interrupts(); // Enable interrupts
   attachInterrupt(digitalPinToInterrupt(inputPin), ISR_impulse, FALLING); // Define interrupt on falling edge
-  unsigned long clock1 = millis(); // Record current time
-  start = clock1; // Set start time
+  unsigned long clock1 = millis(); // Timer
+  start = clock1; // Start timer
 }
 
 void loop() {
@@ -65,7 +67,7 @@ void loop() {
     }
     cpm = counts / minutes; // Calculate counts per minute (CPM)
     Serial.print("Total clicks since start: ");
-    Serial.println(String(counts)); // Print total counts
+    Serial.println(String(totalCounts)); // Print total counts
     Serial.print("Rolling CPM: ");
     Serial.println(String(cpm)); // Print rolling CPM
     counts = 0; // Reset counts for the next period
