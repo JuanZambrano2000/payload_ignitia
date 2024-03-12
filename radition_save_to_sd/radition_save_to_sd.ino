@@ -5,6 +5,12 @@
    Please use freely with attribution. Thank you!
 */
 
+//Sd imports
+#include <SPI.h>
+#include <SdFat.h>
+SdFat sd;                                                // Create an sd object
+const int chipSelect = 4;                                // CS pin
+// Geiger counter import
 volatile unsigned long counts = 0;                       // Tube events
 unsigned long cpm = 0;                                   // CPM
 unsigned long previousMillis;                            // Time measurement
@@ -24,6 +30,28 @@ void ISR_impulse() { // Captures count of events from Geiger counter board
 void setup() {
   // Set up the Arduino environment (runs once during startup)
   Serial.begin(9600); // Initialize serial communication
+  while (!Serial) {
+    ; // Wait for Serial port to be available
+  }
+
+  if (!sd.begin(chipSelect)) { //wait for sd to start
+    sd.initErrorHalt();
+    // Program execution will halt here if sd.begin() fails
+    // and print the error message
+  }
+
+  // Create or open the file "test.txt" for writing
+  SdFile file("readings.txt", FILE_WRITE);
+
+  Serial.println("SD card initialization successful!");
+
+  // Open the file for writing
+  SdFile file("readings.txt", O_RDWR | O_CREAT | O_AT_END);
+  if (!file.isOpen()) {
+      Serial.println("Error opening file");
+      return;
+  }
+
   delay(1000); // Wait for stability
   Serial.println("Booting..."); // Print boot message
   Serial.println("Measuring"); // Print measurement message
@@ -44,11 +72,15 @@ void loop() {
       minutes = 1; // Ensure a minimum of 1 minute
     }
     cpm = counts / minutes; // Calculate counts per minute (CPM)
-    Serial.print("Total clicks since start: ");
-    Serial.println(String(totalCounts)); // Print total counts
-    Serial.print("Rolling CPM: ");
-    Serial.println(String(cpm)); // Print rolling CPM
+    file.print("Total clicks since start: ");
+    file.println(String(totalCounts));
+    file.print("Rolling CPM: ");
+    file.println(String(cpm));
+    file.flush(); // Ensure data is written to the file
     counts = 0; // Reset counts for the next period
+  }
+  if (minutes > 10 ){
+    File.close();
   }
 }
 
