@@ -11,7 +11,7 @@ Este proyecto tiene como objetivo desarrollar un payload para un Cohete para med
 **Componentes:**
 
 * **Hardware:**
-    * Arduino Leonardo
+    * Arduino UNO
     * Contador Geiger RadiationD-v1.1 (CAJOE)
     * Tarjeta SD
     * Sensores adicionales (opcional)
