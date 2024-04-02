@@ -50,8 +50,7 @@ void setup() {
   pinMode(inputPin, INPUT); // Set pin for capturing tube events
   interrupts(); // Enable interrupts
   attachInterrupt(digitalPinToInterrupt(inputPin), ISR_impulse, FALLING); // Define interrupt on falling edge
-  unsigned long clock1 = millis(); // Timer
-  start = clock1; // Start timer
+  unsigned long start = millis(); // Timer
 }
 
 void loop() {
