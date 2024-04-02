@@ -14,19 +14,16 @@ const int chipSelect = 4;                                // CS pin of the sd car
 
 // Geiger counter variables
 volatile unsigned long counts = 0;                       // Tube events
-unsigned long cpm = 0;                                   // CPM
 unsigned long previousMillis;                            // Time measurement
+unsigned long previousMillisSave;                        //How muchtime, needs to be adjusteded to the same as SAVE_DURATION
 const int inputPin = 2;                                  // Geiger counter is in this pin
-unsigned long minutes = 1;
 unsigned long start = 0;
 volatile unsigned long totalCounts = 0;
 bool finish = false;
 
-#define LOG_PERIOD 1000 // Logging period in milliseconds
-#define MINUTE_PERIOD 10000
-
-//Duracion de las medidas, se usa para cerrar el archivo de forma segura
-#define MAX_DURATION 30000 // Time of the experiment - 10 seconds
+#define LOG_PERIOD 500 // Logging period in milliseconds
+#define MAX_DURATION 120000 // Duracion de las medidas, se usa para cerrar el archivo de forma segura
+#define SAVE_DURATION 30000 // Time for each save of the document
 
 SdFile file; // File object
 
@@ -34,6 +31,20 @@ SdFile file; // File object
 void ISR_impulse() {
   counts++;
   totalCounts++;
+}
+
+void open_close(){
+    // Open the file for writing
+  file.close();
+  file.open("readings.txt", FILE_WRITE);
+  Serial.println("Open Close");
+
+  if (!file.isOpen()) {
+    Serial.println("Error opening file");
+    return;
+  }else{
+    file.println("-----");
+  }
 }
 
 void setup() {
@@ -51,17 +62,16 @@ void setup() {
 
   Serial.println("SD card initialization successful!");
 
-  // Open the file for writing
-  file.open("readings.txt", FILE_WRITE);
+  file.open("readings.txt", FILE_WRITE);  // Open the file for writing
 
   if (!file.isOpen()) {
     Serial.println("Error opening file");
     return;
   }else{
     file.println("/////////////////////////////////////////////");
-    file.println("Rolling CPM every ");
+    file.println("RAD Count every : ");
     file.println(LOG_PERIOD);
-    file.println("miliseconds");
+    file.println("Miliseconds");
   }
 
   delay(1000); // Wait for stability
@@ -78,23 +88,22 @@ void setup() {
 void loop() {
   unsigned long currentMillis = millis(); // Get current time
 
-  if (currentMillis - previousMillis > LOG_PERIOD && !finish) {
+  if (currentMillis - previousMillis > LOG_PERIOD && !finish) { // Ver si ha pasado el tiempo de medición
     previousMillis = currentMillis; // Update previous time
 
-    minutes = (previousMillis - start) / MINUTE_PERIOD; // Calculate elapsed minutes
 
-    if (minutes < 1) {
-      minutes = 1; // Ensure a minimum of 1 minute
-    }
-
-    cpm = counts / minutes; // Calculate counts per minute (CPM)
-    Serial.println("Rolling CPM every 0.5 seconds: ");
-    Serial.println(String(cpm));
+    Serial.println("Counts :  ");
+    Serial.println(String(counts));
 
     if (file.isOpen()) {
-      file.println(String(cpm));
+      file.println(String(counts));
     } else {
       Serial.println("Error writing to file");
+    }
+
+    if (currentMillis - previousMillisSave > SAVE_DURATION) {//Ver si ha pasado el tiempo para cerrar y abrir el archivo de manera segura
+      previousMillisSave = currentMillis;
+      open_close();
     }
 
     counts = 0; // Reset counts for the next period
