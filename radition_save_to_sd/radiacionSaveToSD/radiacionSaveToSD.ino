@@ -42,7 +42,6 @@ bool boton = false;
 // Interrupt Service Routine (ISR)
 void ISR_impulse() {
   counts++;
-  totalCounts++;
 }
 
 // Open and close the document to avoid losing data in case of sudden disconnection
@@ -141,6 +140,7 @@ void loop() {
       open_close();
     }
 
+    totalCounts = totalCounts + counts;
     counts = 0; // Reset counts for the next period
   }
 
