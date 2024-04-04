@@ -29,6 +29,7 @@ unsigned long previousMillisSave;                        //How muchtime, needs t
 unsigned long previousMillis;                            // Time measurement
 unsigned long start = 0;                                 // Star in miliseconds
 bool finish = false;                                     //flag for the end of the experiment
+unsigned long recordNumber = 0;
 
 //BUTTON & LED ////////////////////////////////////////////
 #define LED_PIN 8
@@ -130,7 +131,10 @@ void loop() {
     Serial.println(String(counts));
 
     if (file.isOpen()) {
-      file.println(String(counts));
+      file.print(recordNumber);
+      file.print(",");
+      file.print(String(counts));
+      file.println("");
     } else {
       Serial.println("Error writing to file");
     }
@@ -142,6 +146,7 @@ void loop() {
 
     totalCounts = totalCounts + counts;
     counts = 0; // Reset counts for the next period
+    recordNumber++;
   }
 
   // Stop the experiment after the time runs out
