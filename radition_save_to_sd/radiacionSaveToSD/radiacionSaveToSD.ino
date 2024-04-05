@@ -22,8 +22,8 @@ volatile unsigned long totalCounts = 0;
 
 // EXPERIMENT ////////////////////////////////////////////
 #define LOG_PERIOD 500                                  // Logging period in milliseconds 0.5 seconds
-#define MAX_DURATION 15000                              // Duracion de las medidas, se usa para cerrar el archivo de forma segura
-#define SAVE_DURATION 30000                             // Time for each save of the document
+#define MAX_DURATION 28800000                              // Duracion de las medidas, se usa para cerrar el archivo de forma segura
+#define SAVE_DURATION 60000                             // Time for each save of the document
 
 unsigned long previousMillisSave;                        //How muchtime, needs to be adjusteded to the same as SAVE_DURATION
 unsigned long previousMillis;                            // Time measurement
@@ -56,10 +56,10 @@ void open_close(){
     Serial.println("Error opening file");
     return;
   }
-  /*else{
-    file.println("-----");
+  else{
+    file.println("-----------------------------------------");
   }
-  */
+  
 }
 
 void setup() {
@@ -113,9 +113,11 @@ void loop() {
       ledState = !ledState;
       digitalWrite(LED_PIN, ledState);
       Serial.println("Se presiono el boton");
+      file.println("---------------BOTON------------------");
       boton = !boton;
     }
     delay(50); // Debounce delay to avoid multiple toggles
+    counts = 0;
   }
 
   lastButtonState = buttonState;
@@ -127,8 +129,9 @@ void loop() {
   if (currentMillis - previousMillis > LOG_PERIOD && !finish && boton) { // Check if the measurement time ei up, the time has not finiched and if the button has been pressed
     previousMillis = currentMillis; // Update previous time
 
-    Serial.println("Counts :  ");
-    Serial.println(String(counts));
+    Serial.print("Counts :  ");
+    Serial.print(String(counts));
+    Serial.println("");
 
     if (file.isOpen()) {
       file.print(recordNumber);
@@ -145,8 +148,9 @@ void loop() {
     }
 
     totalCounts = totalCounts + counts;
-    counts = 0; // Reset counts for the next period
     recordNumber++;
+    counts = 0; // Reset counts for the next period
+
   }
 
   // Stop the experiment after the time runs out
