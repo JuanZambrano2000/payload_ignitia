@@ -3,12 +3,9 @@
 #include <Adafruit_BME280.h>
 
 #define SEALEVELPRESSURE_HPA (1015)
-#define TARGET_ALTITUDE_OFFSET 5 // Offset to add to the initial altitude (in meters)
 
 Adafruit_BME280 bme;
 float initialAltitude;
-bool initialAltitudeSet = false;
-bool measurementStarted = false;
 
 void setup() {
   Serial.begin(9600);
