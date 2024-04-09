@@ -13,7 +13,6 @@
 SdFile file;                                             // File object
 SdFat sd;                                                // Create an sd object
 const int chipSelect = 4;                                // CS pin of the sd card reader
-
 // Geiger counter /////////////////////////////////////////
 volatile unsigned long counts = 0;                       // Tube events
 const int inputPin = 2;                                  // Geiger counter is in this pin
@@ -22,7 +21,7 @@ volatile unsigned long totalCounts = 0;
 
 // EXPERIMENT ////////////////////////////////////////////
 #define LOG_PERIOD 500                                  // Logging period in milliseconds 0.5 seconds
-#define MAX_DURATION 28800000                              // Duracion de las medidas, se usa para cerrar el archivo de forma segura
+#define MAX_DURATION 1800000                              // Duracion de las medidas, se usa para cerrar el archivo de forma segura
 #define SAVE_DURATION 60000                             // Time for each save of the document
 
 unsigned long previousMillisSave;                        //How muchtime, needs to be adjusteded to the same as SAVE_DURATION
@@ -32,13 +31,25 @@ bool finish = false;                                     //flag for the end of t
 unsigned long recordNumber = 0;
 
 //BUTTON & LED ////////////////////////////////////////////
-#define LED_PIN 8
-#define BUTTON_PIN 7
+#define LED_PIN 9
+#define BUTTON_PIN 8
 
 bool ledState = false;
 bool buttonState = false;
 bool lastButtonState = false;
 bool boton = false;
+
+// Barometro (bme280) ////////////////////////////////////////
+//Barometro imports
+#include <Wire.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_BME280.h>
+
+#define SEALEVELPRESSURE_HPA (1015)
+
+Adafruit_BME280 bme;
+float initialAltitude;
+
 
 // Interrupt Service Routine (ISR)
 void ISR_impulse() {
@@ -57,7 +68,8 @@ void open_close(){
     return;
   }
   else{
-    file.println("-----------------------------------------");
+    //file.println("-----------------------------------------");
+    //No se muestra en el archivo cuando ocurrio esta acción
   }
   
 }
@@ -69,24 +81,36 @@ void setup() {
     ; // Wait for Serial port to be available
   }
 
+  //Barometro 
+  if (!bme.begin(0x76)) {
+    Serial.println("No encuentro un sensor BME280 valido!");
+    while (1);
+  }
+  float initialAltitude = bme.readAltitude(SEALEVELPRESSURE_HPA);
+  delay(50);
+
   //SD card
   if (!sd.begin(chipSelect)) {
     sd.initErrorHalt();
     // Program execution will halt here if sd.begin() fails
-    // and print the error message
-  }
 
-  Serial.println("SD card initialization successful!");
-  file.open("readings.txt", FILE_WRITE);  // Open the file for writing
+  }else{
+    Serial.println("SD card initialization successful!");
+    file.open("readings.txt", FILE_WRITE);  // Open the file for writing
+  }
 
   if (!file.isOpen()) {
     Serial.println("Error opening file");
     return;
   }else{
     file.println("/////////////////////////////////////////////");
-    file.println("RAD Count every : ");
-    file.println(LOG_PERIOD);
-    file.println("Miliseconds");
+    file.println("Experiment : ");
+    file.println("Format : Count, Altitud, Rad.");
+    file.print("RAD Count every : ");
+    file.print("Altura inicial : ");
+    file.println(initialAltitude);
+    file.print(LOG_PERIOD);
+    file.println("  Miliseconds");
   }
 
   delay(1000); // Wait for stability
@@ -100,6 +124,8 @@ void setup() {
   start = millis(); // Timer
   Serial.println("Booting..."); // Print boot message
   Serial.println("Measuring"); // Print measurement message
+  Serial.print("Altitud Inicial : ");
+  Serial.println(initialAltitude);
 
   //LED & BUTTOM
   pinMode(LED_PIN, OUTPUT);
@@ -125,6 +151,7 @@ void loop() {
 
   //Experiment, measurements and records
   unsigned long currentMillis = millis(); // Get current time
+  float currentAltitude = bme.readAltitude(SEALEVELPRESSURE_HPA); //Altitude
 
   if (currentMillis - previousMillis > LOG_PERIOD && !finish && boton) { // Check if the measurement time ei up, the time has not finiched and if the button has been pressed
     previousMillis = currentMillis; // Update previous time
@@ -132,11 +159,16 @@ void loop() {
     Serial.print("Counts :  ");
     Serial.print(String(counts));
     Serial.println("");
+    Serial.print("Altitud  :  ");
+    Serial.println(currentAltitude);
+    Serial.println("");
 
     if (file.isOpen()) {
       file.print(recordNumber);
       file.print(",");
-      file.print(String(counts));
+      file.print(String(currentAltitude));
+      file.print(",");
+      file.print(String(counts));    
       file.println("");
     } else {
       Serial.println("Error writing to file");
@@ -146,11 +178,10 @@ void loop() {
       previousMillisSave = currentMillis;
       open_close();
     }
-
+ 2
     totalCounts = totalCounts + counts;
     recordNumber++;
     counts = 0; // Reset counts for the next period
-
   }
 
   // Stop the experiment after the time runs out
