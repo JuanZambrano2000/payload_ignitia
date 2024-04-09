@@ -20,9 +20,9 @@ volatile unsigned long totalCounts = 0;
 
 
 // EXPERIMENT ////////////////////////////////////////////
-#define LOG_PERIOD 500                                  // Logging period in milliseconds 0.5 seconds
-#define MAX_DURATION 1800000                              // Duracion de las medidas, se usa para cerrar el archivo de forma segura
-#define SAVE_DURATION 60000                             // Time for each save of the document
+#define LOG_PERIOD 500                                  // Logging period in milliseconds -> 0.5 seconds
+#define MAX_DURATION 300000                              // Duracion de las medidas, se usa para cerrar el archivo de forma segura
+#define SAVE_DURATION 10000                             // Time for each save of the document
 
 unsigned long previousMillisSave;                        //How muchtime, needs to be adjusteded to the same as SAVE_DURATION
 unsigned long previousMillis;                            // Time measurement
@@ -87,6 +87,8 @@ void setup() {
     while (1);
   }
   float initialAltitude = bme.readAltitude(SEALEVELPRESSURE_HPA);
+  float temperaturaInicial = bme.readTemperature();
+
   delay(50);
 
   //SD card
@@ -105,12 +107,21 @@ void setup() {
   }else{
     file.println("/////////////////////////////////////////////");
     file.println("Experiment : ");
-    file.println("Format : Count, Altitud, Rad.");
-    file.print("RAD Count every : ");
-    file.print("Altura inicial : ");
-    file.println(initialAltitude);
+    file.println("Format : Count, Altitud, Temperatura, Rad.");
+    file.print("Total time : ");
+    file.print(MAX_DURATION);
+    file.println("  Miliseconds");
+    file.print("Measurements every : ");
     file.print(LOG_PERIOD);
     file.println("  Miliseconds");
+    file.print("Save Data every : ");
+    file.print(SAVE_DURATION);
+    file.println("  Miliseconds");
+
+    file.print("Altura inicial : ");
+    file.println(initialAltitude);
+    file.print("Temperatura inicial : ");
+    file.println(temperaturaInicial);
   }
 
   delay(1000); // Wait for stability
@@ -126,6 +137,9 @@ void setup() {
   Serial.println("Measuring"); // Print measurement message
   Serial.print("Altitud Inicial : ");
   Serial.println(initialAltitude);
+  Serial.print("Temperatura Inicial : ");
+  Serial.println(temperaturaInicial);
+
 
   //LED & BUTTOM
   pinMode(LED_PIN, OUTPUT);
@@ -152,6 +166,8 @@ void loop() {
   //Experiment, measurements and records
   unsigned long currentMillis = millis(); // Get current time
   float currentAltitude = bme.readAltitude(SEALEVELPRESSURE_HPA); //Altitude
+  float currentTemp = bme.readTemperature();
+
 
   if (currentMillis - previousMillis > LOG_PERIOD && !finish && boton) { // Check if the measurement time ei up, the time has not finiched and if the button has been pressed
     previousMillis = currentMillis; // Update previous time
@@ -161,12 +177,16 @@ void loop() {
     Serial.println("");
     Serial.print("Altitud  :  ");
     Serial.println(currentAltitude);
+    Serial.print("Tepmperatura  :  ");
+    Serial.println(currentTemp);
     Serial.println("");
 
     if (file.isOpen()) {
       file.print(recordNumber);
       file.print(",");
       file.print(String(currentAltitude));
+      file.print(",");
+      file.print(String(currentTemp));
       file.print(",");
       file.print(String(counts));    
       file.println("");
@@ -178,7 +198,7 @@ void loop() {
       previousMillisSave = currentMillis;
       open_close();
     }
- 2
+ 
     totalCounts = totalCounts + counts;
     recordNumber++;
     counts = 0; // Reset counts for the next period
