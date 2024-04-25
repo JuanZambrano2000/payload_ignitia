@@ -13,11 +13,13 @@ bool measurementStarted = false;
 bool measurementStopped = false;
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
+  Serial.println("test1");
   if (!bme.begin(0x76)) {
     Serial.println("No encuentro un sensor BME280 valido!");
     while (1);
   }
+  Serial.println("test2");
   delay(50);
   float initialAltitude = bme.readAltitude(SEALEVELPRESSURE_HPA);
   float targetAltitude = initialAltitude + TARGET_ALTITUDE_OFFSET;
